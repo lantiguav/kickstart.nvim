@@ -843,19 +843,18 @@ require('lazy').setup({
     'catppuccin/nvim',
     name = 'catppuccin',
     priority = 1000, -- Make sure to load this before all the other start plugins.
+    opts = {
+      custom_highlights = function(colors)
+        return {
+          LineNr = { fg = colors.lavender },
+          CursorLineNr = { fg = colors.pink },
+        }
+      end,
+    },
     init = function()
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
-
-      require('catppuccin').setup {
-        custom_highlights = function(colors)
-          return {
-            LineNr = { fg = colors.lavender },
-            CursorLineNr = { fg = colors.pink },
-          }
-        end,
-      }
       vim.cmd.colorscheme 'catppuccin-frappe'
 
       -- You can configure highlights by doing something like:
