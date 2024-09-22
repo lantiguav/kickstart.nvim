@@ -171,6 +171,15 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
 --
+
+-- [[ Custom Keymaps ]]
+vim.keymap.set('i', 'jk', '<Esc>')
+vim.keymap.set('n', 'J', '5j')
+vim.keymap.set('n', 'K', '5k')
+vim.keymap.set('n', '<leader>j', 'J')
+vim.keymap.set('n', '<leader>k', 'K')
+vim.keymap.set('n', '<leader>w', ':w<enter>')
+
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
@@ -543,6 +552,8 @@ require('lazy').setup({
           -- or a suggestion from your LSP for this to activate.
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
 
+          map('gh', vim.lsp.buf.hover, '[G]et [H]elp')
+
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -837,6 +848,14 @@ require('lazy').setup({
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
 
+      require('catppuccin').setup {
+        custom_highlights = function(colors)
+          return {
+            LineNr = { fg = colors.lavender },
+            CursorLineNr = { fg = colors.pink },
+          }
+        end,
+      }
       vim.cmd.colorscheme 'catppuccin-frappe'
 
       -- You can configure highlights by doing something like:
