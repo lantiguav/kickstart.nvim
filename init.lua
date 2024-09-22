@@ -13,8 +13,7 @@
 ========         ||:Tutor              ||   |:::::|          ========
 ========         |'-..................-'|   |____o|          ========
 ========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
+========        /::::::::::|  |::::::::::\  \ no mouse \     ======== ========       /:::========|  |==hjkl==:::\  \ required \    ========
 ========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
 ========                                                     ========
 =====================================================================
@@ -165,7 +164,7 @@ vim.opt.scrolloff = 10
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>Q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -618,6 +617,7 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
+        phpactor = {},
         -- clangd = {},
         -- gopls = {},
         -- pyright = {},
@@ -660,6 +660,7 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'php-cs-fixer',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -929,7 +930,24 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'jsdoc',
+        'json',
+        'regex',
+        'tsx',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'yaml',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -941,6 +959,31 @@ require('lazy').setup({
       },
       indent = { enable = true, disable = { 'ruby' } },
     },
+    config = function(_, opts)
+      -- local map = require('calebdw.util').map
+      local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
+      parser_config.blade = {
+        install_info = {
+          url = 'https://github.com/EmranMR/tree-sitter-blade',
+          files = { 'src/parser.c' },
+          branch = 'main',
+        },
+        filetype = 'blade',
+      }
+
+      -- Set the *.blade.php files to filetype blade
+      vim.api.nvim_create_augroup('BladeFiltypeRelated', { clear = true })
+      vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
+        pattern = '*.blade.php',
+        command = 'setlocal ft=blade',
+        group = 'BladeFiltypeRelated',
+      })
+
+      require('nvim-treesitter.configs').setup(opts)
+
+      -- map('n', '<leader>it', vim.treesitter.inspect_tree)
+      -- map('n', '<leader>i', vim.show_pos)
+    end,
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --
